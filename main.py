@@ -95,15 +95,16 @@ def main(loader: SomeStorageLibrary, data_parser: DataParser) -> None:
         dump the combined data as csv """
     joined_dict = data_parser.join_two_dicts()
     data_parser.load_to_stage(joined_dict)
-    stage = DataParser.read_text(OUTPUT)
 
+    stage = DataParser.read_text(OUTPUT)  # Read the file in stage folder
     # check the dimensions
-    assert data_parser.row_count == len(stage) - 1
-    assert data_parser.column_count == len(stage[0].split(',')) + 1
+    assert len(stage) - 1 == data_parser.row_count
+    assert len(stage[0].split(',')) + 1 == data_parser.column_count
     # check the column sequence
     assert stage[0].split(',')[0].strip() == 'Order Date'
     assert stage[0].split(',')[8].strip() == 'Ship Date'
 
+    # Move file to destination
     loader.load_csv(OUTPUT)
 
 
