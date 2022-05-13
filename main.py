@@ -18,10 +18,10 @@ OUTPUT = 'data/stage/joined_output.csv'
 
 
 class DataParser:
-    """A Data Parser that read columns information from one text file and data from another text file.
-        Conbine the two file, sort column, and dump to data/destination folder as a csv file"""
+    """A Data Parser that reads columns information from one text file and data from another text file.
+        Combine the two file, sort column, and dump to 'data/destination' folder as a csv file"""
 
-    def __init__(self, sourcecolumns, sourcedata, encoding, sep, output) -> None:
+    def __init__(self, sourcecolumns: str, sourcedata: str, encoding: str, sep: str, output: str) -> None:
         self.sourcecolumns = sourcecolumns
         self.sourcedata = sourcedata
         self.encoding = encoding
@@ -30,7 +30,7 @@ class DataParser:
 
     @staticmethod
     def read_text(filename: str, encoding: str = 'utf-8') -> List[str]:
-        """read one text file"""
+        """read one text file into lines"""
         with open(file=filename, encoding=encoding) as f:
             lines = f.readlines()
             if lines is None:
@@ -41,7 +41,7 @@ class DataParser:
         """parse SourceColumns data and sort by first column"""
         data = dict()
         lines = self.read_text(filename, encoding)
-        self.column_count = 0
+        self.column_count = 0  # get a counter for quality check
         for line in lines:
             l = line.strip('\n').split(sep)
             if l[0] is None:
@@ -56,7 +56,7 @@ class DataParser:
         """parse text body data"""
         data = defaultdict(list)
         lines = self.read_text(filename, encoding)
-        self.row_count = 0
+        self.row_count = 0.  # get a counter for quality check
         for line in lines:
             cells = line.strip('\n').split(sep)
             for i in range(len(cells)):
@@ -67,8 +67,7 @@ class DataParser:
     def join_two_dicts(self) -> Dict[str, List[str]]:
         """Join the two dictionaries and load them into a list of dictionaries"""
         res = []
-        header = self.parse_columns(
-            self.sourcecolumns, self.encoding, self.sep)
+        header = self.parse_columns(self.sourcecolumns, self.encoding, self.sep)
         data = self.parse_data(self.sourcedata, self.encoding, self.sep)
         data_length = len(data[1])
         for i in range(data_length):
