@@ -67,9 +67,12 @@ class DataParser:
     def join_two_dicts(self) -> Dict[str, List[str]]:
         """Join the two dictionaries and load them into a list of dictionaries"""
         res = []
-        header = self.parse_columns(self.sourcecolumns, self.encoding, self.sep)
+        header = self.parse_columns(
+            self.sourcecolumns, self.encoding, self.sep)
         data = self.parse_data(self.sourcedata, self.encoding, self.sep)
         data_length = len(data[1])
+        if data_length == 0:
+            raise ValueError("data is empty!")
         for i in range(data_length):
             d = {}
             for k in header:
@@ -88,7 +91,8 @@ class DataParser:
 
 
 def main(loader: SomeStorageLibrary, data_parser: DataParser) -> None:
-
+    """Take a data_parser to parse two text files and use a loader to 
+        dump the combined data as csv """
     joined_dict = data_parser.join_two_dicts()
     data_parser.load_to_stage(joined_dict)
     stage = DataParser.read_text(OUTPUT)
@@ -96,6 +100,9 @@ def main(loader: SomeStorageLibrary, data_parser: DataParser) -> None:
     # check the dimensions
     assert data_parser.row_count == len(stage) - 1
     assert data_parser.column_count == len(stage[0].split(',')) + 1
+    # check the column sequence
+    assert stage[0].split(',')[0].strip() == 'Order Date'
+    assert stage[0].split(',')[8].strip() == 'Ship Date'
 
     loader.load_csv(OUTPUT)
 
