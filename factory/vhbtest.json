@@ -1,0 +1,9 @@
+{
+	"name": "vhbtest",
+	"location": "westus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "35c6442d-5182-4041-8c77-f62f9148b327",
+		"tenantId": "2a535109-50c8-41c4-88c7-83f14eddacbd"
+	}
+}
